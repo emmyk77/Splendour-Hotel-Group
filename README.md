@@ -6,6 +6,12 @@ Business intelligence project analysing 119,390 bookings from two SHG hotels (Ci
 
 **Author:** Emmanuel Kebodi Friday
 
+## Dashboard preview
+
+![Booking analysis dashboard highlights](images/dashboard-preview.png)
+
+*Static preview created from the project result tables. The interactive dashboard is available in [docs/index.html](docs/index.html); download the repository and open that file in a browser.*
+
 ## Deliverables
 
 | Deliverable | Where |
