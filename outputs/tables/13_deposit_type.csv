@@ -1,0 +1,4 @@
+deposit_type,bookings,share_pct,cancel_rate_pct,revenue,revenue_share_pct,revenue_lost,loss_share_pct,revenue_realisation_pct,revenue_per_booking,avg_lead_time,adr,avg_stay_nights
+No Deposit,104641,87.646,28.377,25950163.33,87.668,13102901.92,99.848,66.448,247.992,88.757,105.501,3.425
+Non Refundable,14587,12.218,99.362,3621446.9,12.234,0.0,0.0,100.0,248.265,212.909,89.6,2.29
+Refundable,162,0.136,22.222,28987.21,0.098,19998.17,0.152,59.175,178.933,152.099,76.21,3.405

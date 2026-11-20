@@ -1,0 +1,12 @@
+,auc_drop
+country,0.1337
+deposit_type,0.0913
+lead_time,0.0763
+distribution_channel,0.069
+customer_type,0.0442
+arrival_year,0.0381
+adr,0.0319
+arrival_month,0.0113
+nights,0.0081
+hotel,0.0057
+guests,0.0042

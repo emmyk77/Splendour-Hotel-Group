@@ -1,0 +1,6 @@
+distribution_channel,bookings,share_pct,cancel_rate_pct,revenue,revenue_share_pct,revenue_lost,loss_share_pct,revenue_realisation_pct,revenue_per_booking,avg_lead_time,adr,avg_stay_nights
+Online Travel Agent,74072,62.042,43.18,17255123.51,58.293,10782870.82,82.168,61.542,232.951,108.249,109.499,3.313
+Offline Travel Agent,23991,20.095,34.2,6993595.67,23.627,1110542.27,8.463,86.297,291.509,135.585,88.14,4.314
+Direct,14645,12.267,17.46,4432819.99,14.975,1033280.81,7.874,81.097,302.685,57.829,112.875,3.108
+Corporate,6677,5.593,22.076,918494.77,3.103,195598.69,1.491,82.443,137.561,44.91,71.378,2.351
+Undefined,5,0.004,80.0,563.5,0.002,607.5,0.005,48.121,112.7,23.0,46.24,5.0

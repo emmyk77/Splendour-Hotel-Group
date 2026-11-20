@@ -1,0 +1,12 @@
+check,count
+Rows,119390
+Exact duplicate rows (all fields except Booking ID),35284
+Zero ADR,1959
+Negative ADR,1
+"ADR of 5,000 or more",1
+Zero guests,180
+Zero nights,715
+Channel recorded as Undefined,5
+Blank country,488
+Canceled flag = 1 (includes no-shows),44224
+Status = No-Show,1207

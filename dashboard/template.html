@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SHG Booking Performance Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#edf1f3;--panel:#fff;--ink:#12263a;--mute:#5b6b79;--line:#d5dde2;--teal:#0f766e;--brass:#b8892b;--rasp:#a63d5b;--navy:#2f4b6e;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1a24;--panel:#15242f;--ink:#e6edf1;--mute:#97a8b5;--line:#2a3c49;--teal:#3fb8ac;--brass:#d9b25b;--rasp:#e07a97;--navy:#7fa3d1;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0e1a24;--panel:#15242f;--ink:#e6edf1;--mute:#97a8b5;--line:#2a3c49;--teal:#3fb8ac;--brass:#d9b25b;--rasp:#e07a97;--navy:#7fa3d1;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 15px/1.5 "Source Sans 3",system-ui,-apple-system,"Segoe UI",sans-serif}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+h1,h2{font-family:"Bricolage Grotesque","Source Sans 3",system-ui,sans-serif;margin:0;letter-spacing:-.01em}
+header{padding:28px clamp(16px,4vw,48px) 8px}
+h1{font-size:clamp(26px,4vw,38px);line-height:1.1}
+header p{margin:8px 0 0;color:var(--mute);max-width:70ch}
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding:12px clamp(16px,4vw,48px);border-bottom:1px solid var(--line);display:flex;flex-wrap:wrap;gap:10px 14px;align-items:end}
+.bar label{display:flex;flex-direction:column;font-size:12.5px;color:var(--mute);gap:3px}
+select,button{font:inherit;color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:6px 8px;min-height:36px}
+button{cursor:pointer;font-weight:600}
+select:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+.chk{flex-direction:row!important;align-items:center;gap:6px!important;min-height:36px;color:var(--ink)!important}
+main{padding:20px clamp(16px,4vw,48px) 48px;max-width:1500px;margin:0 auto}
+.kpis{display:flex;flex-wrap:wrap;margin-bottom:22px}
+.kpi{padding:4px 28px 4px 16px;border-left:3px solid var(--line);margin:6px 0}
+.kpi:nth-child(odd){border-color:var(--teal)}.kpi:nth-child(even){border-color:var(--brass)}
+.kpi b{display:block;font:700 clamp(24px,3vw,32px)/1.1 "Bricolage Grotesque",sans-serif}
+.kpi span{font-size:13px;color:var(--mute)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,440px),1fr));gap:18px}
+.box{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px 18px;min-width:0}
+.box h2{font-size:18px;margin-bottom:2px}.box small{color:var(--mute);display:block;margin-bottom:10px}
+.cv{position:relative;height:280px}
+.wide{grid-column:1/-1}
+.tw{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:14px;font-variant-numeric:tabular-nums}
+th,td{padding:7px 10px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap}
+th:first-child,td:first-child{text-align:left}
+th{font-weight:600;color:var(--mute);font-size:13px}
+.find{margin:0;padding-left:18px}.find li{margin:6px 0;max-width:110ch}
+.note{color:var(--mute);font-size:13px;margin-top:18px;max-width:110ch}
+</style>
+</head>
+<body>
+<header>
+<h1>Splendor Hotel Groups: booking performance</h1>
+<p>119,390 bookings across the City and Resort hotels, arrivals from July 2015 to August 2017. Every figure below responds to the filters.</p>
+</header>
+<div class="bar" id="bar"></div>
+<main>
+<div class="kpis" id="kpis"></div>
+<div class="grid">
+<div class="box wide"><h2>Bookings and revenue by arrival month</h2><small>Bars show bookings, the line shows revenue collected</small><div class="cv"><canvas id="c1"></canvas></div></div>
+<div class="box"><h2>Price and cancellations through the year</h2><small>Average daily rate against cancellation rate, by arrival month</small><div class="cv"><canvas id="c2"></canvas></div></div>
+<div class="box"><h2>Lead time</h2><small>Cancellation rate and revenue per booking by days between booking and arrival</small><div class="cv"><canvas id="c3"></canvas></div></div>
+<div class="box"><h2>Revenue collected and lost by channel</h2><small>Lost revenue is the value of cancelled stays that was not retained</small><div class="cv"><canvas id="c4"></canvas></div></div>
+<div class="box"><h2>What the full dataset shows</h2><ul class="find">
+<li>Online travel agents bring 62% of bookings but 82% of lost revenue. Their cancellation rate is 43%, against 17% for direct bookings.</li>
+<li>Revenue for January to August 2017 was 22% above the same months of 2016, but the cancellation rate rose from 35% to 39%.</li>
+<li>Bookings made 6 months or more ahead cancel at 55% or more. Bookings made within a week cancel at under 10%.</li>
+<li>Portugal supplies 41% of bookings and cancels at 57%. Guests from the UK, Germany and France cancel at 17% to 20%.</li>
+<li>Corporate bookings are 6% of volume with the lowest ADR (₦71 against ₦103 overall) and cancel at 22%.</li>
+</ul></div>
+<div class="box wide"><h2>Distribution channels</h2><small></small><div class="tw" id="t1"></div></div>
+<div class="box wide"><h2>Customer types</h2><small></small><div class="tw" id="t2"></div></div>
+<div class="box wide"><h2>Deposit types</h2><small></small><div class="tw" id="t3"></div></div>
+<div class="box wide"><h2>Countries of origin</h2><small>Twelve largest markets; all others grouped</small><div class="tw" id="t4"></div></div>
+</div>
+<p class="note">Definitions. Cancellation uses the Canceled (0/1) flag, which includes 1,207 no-shows. ADR excludes zero-rate bookings and one outlier of ₦5,400. Average stay counts completed stays of at least one night. Amounts are presented in Nigerian naira (₦) by assumption; the source does not specify a currency and no conversion was applied. The source holds 35,284 rows that match another row on every field except Booking ID; tick the duplicate filter to see results without them.</p>
+</main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+const D=__DATA__;const dims=D.dims,rows=D.rows;
+const MN=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const lab=dims.ym.map(s=>MN[+s.slice(5)-1]+' '+s.slice(2,4)),yrOf=dims.ym.map(s=>s.slice(0,4));
+const F={h:-1,c:-1,t:-1,d:-1,y:-1,l:-1,yr:'',dup:0};
+const fi=n=>Math.round(n).toLocaleString('en-US');
+const fm=n=>'₦'+(n>=1e6?(n/1e6).toFixed(2)+'M':n>=1e4?(n/1e3).toFixed(0)+'k':fi(n));
+const p1=n=>n==null?'n/a':n.toFixed(1)+'%',d1=n=>n==null?'n/a':n.toFixed(1);
+const z=()=>Array(9).fill(0),css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const cr=a=>a[0]?a[1]/a[0]*100:null,adr=a=>a[7]?a[6]/a[7]:null,stay=a=>a[5]?a[4]/a[5]:null,lead=a=>a[0]?a[8]/a[0]:null;
+let B,T,CH={};
+function compute(){
+ B={m:dims.ym.map(z),c:dims.ch.map(z),t:dims.ct.map(z),d:dims.dep.map(z),y:dims.cty.map(z),l:dims.lb.map(z)};T=z();
+ for(const r of rows){
+  if(F.h>=0&&r[0]!=F.h||F.c>=0&&r[2]!=F.c||F.t>=0&&r[3]!=F.t||F.d>=0&&r[4]!=F.d||F.y>=0&&r[5]!=F.y||F.l>=0&&r[6]!=F.l)continue;
+  if(F.yr&&yrOf[r[1]]!=F.yr||F.dup&&r[7])continue;
+  const k=[B.m[r[1]],B.c[r[2]],B.t[r[3]],B.d[r[4]],B.y[r[5]],B.l[r[6]],T];
+  for(let i=0;i<9;i++){const v=r[8+i];for(const a of k)a[i]+=v}
+ }
+}
+function kpis(){
+ const L=[[fi(T[0]),'Bookings'],[fm(T[2]),'Revenue collected'],[fm(T[3]),'Revenue lost to cancellations'],[p1(cr(T)),'Cancellation rate'],['₦'+d1(adr(T)),'Average daily rate'],[d1(stay(T)),'Average stay, nights'],[d1(lead(T)),'Average lead time, days']];
+ document.getElementById('kpis').innerHTML=L.map(x=>`<div class="kpi"><b>${x[0]}</b><span>${x[1]}</span></div>`).join('');
+}
+function tbl(id,names,arr,sort){
+ let ix=names.map((_,i)=>i).filter(i=>arr[i][0]>0);if(sort)ix.sort((a,b)=>arr[b][0]-arr[a][0]);
+ const rev=arr.reduce((s,a)=>s+a[2],0),n=T[0]||1;
+ const h=['Segment','Bookings','Share','Revenue','Lost','Cancel rate','ADR','Stay','Lead time'];
+ document.getElementById(id).innerHTML='<table><thead><tr>'+h.map(x=>`<th>${x}</th>`).join('')+'</tr></thead><tbody>'+ix.map(i=>{const a=arr[i];return `<tr><td>${names[i]}</td><td>${fi(a[0])}</td><td>${(a[0]/n*100).toFixed(1)}%</td><td>${fm(a[2])}</td><td>${fm(a[3])}</td><td>${p1(cr(a))}</td><td>${a[7]?'₦'+d1(adr(a)):'n/a'}</td><td>${d1(stay(a))}</td><td>${d1(lead(a))}</td></tr>`}).join('')+'</tbody></table>';
+}
+function mk(id,cfg){if(CH[id])CH[id].destroy();CH[id]=new Chart(document.getElementById(id),cfg)}
+function base(y1,pct){const tc=css('--mute'),gc=css('--line');
+ const sc={x:{ticks:{color:tc,maxRotation:60,autoSkip:true},grid:{display:false}},y:{ticks:{color:tc},grid:{color:gc},beginAtZero:true}};
+ if(y1)sc.y1={position:'right',ticks:{color:tc,callback:v=>pct?v+'%':v},grid:{display:false},beginAtZero:true};
+ return {responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{labels:{color:css('--ink'),boxWidth:12}}},scales:sc}}
+function charts(){
+ Chart.defaults.font.family='"Source Sans 3",system-ui,sans-serif';
+ const te=css('--teal'),br=css('--brass'),ra=css('--rasp'),nv=css('--navy');
+ const cl=dims.ch.slice(0,4),ci=[0,1,2,3];
+ mk('c1',{data:{labels:lab,datasets:[{type:'bar',label:'Bookings',data:B.m.map(a=>a[0]),backgroundColor:te,yAxisID:'y'},{type:'line',label:'Revenue collected (₦)',data:B.m.map(a=>Math.round(a[2])),borderColor:br,backgroundColor:br,tension:.3,pointRadius:2,yAxisID:'y1'}]},options:base(true)});
+ mk('c2',{type:'line',data:{labels:lab,datasets:[{label:'ADR (₦)',data:B.m.map(adr),borderColor:br,backgroundColor:br,tension:.3,pointRadius:2,yAxisID:'y',spanGaps:true},{label:'Cancellation rate %',data:B.m.map(cr),borderColor:ra,backgroundColor:ra,tension:.3,pointRadius:2,yAxisID:'y1',spanGaps:true}]},options:base(true,true)});
+ mk('c3',{data:{labels:dims.lb,datasets:[{type:'bar',label:'Cancellation rate %',data:B.l.map(cr),backgroundColor:ra,yAxisID:'y'},{type:'line',label:'Revenue per booking (₦)',data:B.l.map(a=>a[0]?a[2]/a[0]:null),borderColor:te,backgroundColor:te,pointRadius:3,yAxisID:'y1',spanGaps:true}]},options:base(true)});
+ mk('c4',{type:'bar',data:{labels:cl,datasets:[{label:'Revenue collected (₦)',data:ci.map(i=>Math.round(B.c[i][2])),backgroundColor:te},{label:'Revenue lost (₦)',data:ci.map(i=>Math.round(B.c[i][3])),backgroundColor:ra}]},options:(o=>{o.scales.x.stacked=true;o.scales.y.stacked=true;return o})(base(false))});
+}
+function render(){
+ compute();kpis();
+ const m=CH.c1;if(!m){charts()}else{
+  CH.c1.data.datasets[0].data=B.m.map(a=>a[0]);CH.c1.data.datasets[1].data=B.m.map(a=>Math.round(a[2]));
+  CH.c2.data.datasets[0].data=B.m.map(adr);CH.c2.data.datasets[1].data=B.m.map(cr);
+  CH.c3.data.datasets[0].data=B.l.map(cr);CH.c3.data.datasets[1].data=B.l.map(a=>a[0]?a[2]/a[0]:null);
+  CH.c4.data.datasets[0].data=[0,1,2,3].map(i=>Math.round(B.c[i][2]));CH.c4.data.datasets[1].data=[0,1,2,3].map(i=>Math.round(B.c[i][3]));
+  Object.values(CH).forEach(c=>c.update('none'));}
+ tbl('t1',dims.ch,B.c,false);tbl('t2',dims.ct,B.t,false);tbl('t3',dims.dep,B.d,false);tbl('t4',dims.cty,B.y,true);
+}
+function ui(){
+ const S=[['Hotel','h',dims.hotel],['Channel','c',dims.ch],['Customer type','t',dims.ct],['Deposit','d',dims.dep],['Country','y',dims.cty],['Lead time','l',dims.lb.map(x=>x+' days')]];
+ let h=S.map(s=>`<label>${s[0]}<select data-k="${s[1]}"><option value="-1">All</option>${s[2].map((v,i)=>`<option value="${i}">${v}</option>`).join('')}</select></label>`).join('');
+ h+=`<label>Arrival year<select data-k="yr"><option value="">All</option><option>2015</option><option>2016</option><option>2017</option></select></label>`;
+ h+=`<label class="chk"><input type="checkbox" id="dup"> Exclude duplicate rows</label><button id="rs">Reset</button>`;
+ const bar=document.getElementById('bar');bar.innerHTML=h;
+ bar.addEventListener('change',e=>{const k=e.target.dataset.k;if(k){F[k]=k==='yr'?e.target.value:+e.target.value}else if(e.target.id==='dup')F.dup=e.target.checked?1:0;render()});
+ document.getElementById('rs').onclick=()=>{Object.assign(F,{h:-1,c:-1,t:-1,d:-1,y:-1,l:-1,yr:'',dup:0});bar.querySelectorAll('select').forEach(s=>s.selectedIndex=0);document.getElementById('dup').checked=false;render()};
+}
+ui();render();
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>{charts()});
+</script>
+</body>
+</html>

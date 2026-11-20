@@ -1,0 +1,5 @@
+data,model,auc,accuracy,precision,recall
+all rows,Gradient boosting,0.9077,0.8249,0.8137,0.6839
+all rows,Logistic regression,0.8388,0.7713,0.7818,0.5308
+duplicates removed,Gradient boosting,0.8354,0.7801,0.6556,0.4649
+duplicates removed,Logistic regression,0.7616,0.7477,0.6042,0.3065

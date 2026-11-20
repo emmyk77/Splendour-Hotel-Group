@@ -1,0 +1,5 @@
+customer_type,bookings,share_pct,cancel_rate_pct,revenue,revenue_share_pct,revenue_lost,loss_share_pct,revenue_realisation_pct,revenue_per_booking,avg_lead_time,adr,avg_stay_nights
+Transient,89613,75.059,40.746,22696813.88,76.677,11502290.03,87.651,66.367,253.276,93.296,108.714,3.4
+Transient-Party,25124,21.044,25.43,5225239.33,17.652,1319396.25,10.054,79.84,207.978,137.037,87.665,3.088
+Contract,4076,3.414,30.962,1555189.13,5.254,283888.62,2.163,84.564,381.548,142.97,88.068,6.22
+Group,577,0.483,10.225,123355.1,0.417,17325.19,0.132,87.685,213.787,55.057,88.553,2.817
