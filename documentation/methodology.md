@@ -1,6 +1,10 @@
 # Methodology
 
-## Data preparation
+## Analysis and supporting files
+
+I used Microsoft Excel for my booking performance analysis. The HTML dashboard presents the findings in a browser. This document records the metric definitions and data-quality decisions used in the project; the data-frame processing, statistical tests, and predictive models below describe the supplementary Python pipeline included in this repository.
+
+## Data preparation in the supplementary pipeline
 - The raw file is a markdown table. It is parsed into a data frame and the three date fields, stored as spreadsheet serial numbers, are converted to calendar dates.
 - Checks confirm that Booking ID is unique and that Lead Time equals arrival date minus booking date on every row.
 - For completed stays, Status Update equals the check-out date, which is used for the check-out analysis.
@@ -33,10 +37,10 @@
 ## Seasonality
 Arrivals cover July 2015 to August 2017, so 2016 is the only complete calendar year. Seasonal profiles use 2016 and yearly averages across the years each month appears.
 
-## Cancellation model
+## Supplementary Python cancellation model
 A gradient boosting classifier (scikit-learn `HistGradientBoostingClassifier`) and a logistic regression were trained on 75% of bookings and tested on 25%, stratified by outcome, with a fixed random seed. Inputs are hotel, channel, customer type, country (top 20 plus Other), deposit type, lead time, nights, guests, ADR, arrival month and arrival year. Feature importance is the fall in test AUC when a feature's values are shuffled (average of three shuffles). The model shows association, not cause.
 
-## Statistical test
+## Supplementary statistical test
 A Kruskal-Wallis test compares lead time across customer types (`08_kruskal_lead_by_customer_type.csv`).
 
 ## Limitations
